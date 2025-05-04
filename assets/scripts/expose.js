@@ -3,6 +3,8 @@
 window.addEventListener('DOMContentLoaded', init);
 
 function init() {
+    const jsConfetti = new JSConfetti();
+    
     const hornSelect = document.getElementById('horn-select');
 
     hornSelect.addEventListener('change', function() {
@@ -35,11 +37,17 @@ function init() {
         const hornType = hornSelect.value;
         const audio = document.querySelector('audio');
 
-        if (hornType === 'party-horn' && volumeControl.value == 0) {
-            alert("Please increase the volume to hear the sound.");
-        } else {
+        if (volumeControl.value != 0) {
             audio.volume = volumeControl.value / 100;
-            audio.play();
+
+            audio.addEventListener('canplaythrough', () => {
+                if (hornType === 'party-horn') {
+                    jsConfetti.addConfetti();
+                }
+                audio.play();
+            }, { once: true });
+    
+            audio.load();
         }
     });
 }
